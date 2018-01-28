@@ -3,21 +3,96 @@
 		<!-- Load JS libraries -->
 		<script src="scripts/countUp.js"></script>
 		<script src="scripts/snoowrap.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.js"></script>
+
+		<!-- Load fonts -->
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+
+		<style>
+		 	#countDown {
+				font-size:100px;
+				margin-top:-20px;
+			    font-family: 'Open Sans Condensed', sans-serif;
+			    text-align:center;
+			}
+
+			#focusSub, #focusSub:focus {
+				outline: none;
+				border: none;
+			}
+
+			#header, #focusSub{
+				font-family: 'Roboto', sans-serif;
+				font-size:65px;
+			}
+
+			#focusSub{
+				margin-left:5px;
+				position:absolute;
+				margin-bottom:0px;
+
+			}
+
+			#indent{
+				margin-left:50px;
+			}
+
+			#progressChart{
+				margin-top:-50px;
+			}
+
+		</style>
 	</head>
+
 	<body>
-		<center><h1 id="countDown" style="font-size:100px;margin-top:40px;"></h1></center>
+		<h1 id="header">Live subscriber count for <br/> <div id="indent">/r/ <input id="focusSub" spellcheck="false" maxlength="21"> </div></h1>
+		<h1 id="countDown"></h1>
+
+		<canvas id="progressChart" width="100" height="100"> </canvas>
 	</body>
 	<script>
 		//Define constants
 		let subreddit = "announcements" 
-		let updateInterval = 1000 //seconds
+		let updateInterval = 2000 //seconds
+		let ERR_MSG = "Invalid subreddit!"
+		let prevsub = '';
+
+		//Update dynamic title & set focus 
+		document.getElementById("focusSub").value = subreddit;
+		document.getElementById("focusSub").focus()
+
+		//Initialize Canvas
+		var canvas = document.getElementById("progressChart")
+		canvas.width = window.innerWidth; canvas.height = window.innerHeight - canvas.offsetTop-185;
+
+		//Initialize chart 
+		var ctx = canvas.getContext('2d');
+		var vizChart = new Chart(ctx, {
+			type: 'line',
+			data: {
+				labels: [],
+				datasets:[
+					{
+						label: "Subscribers",
+						data: [],
+						backgroundColor: 'rgba(66, 134, 244, 0.5)',
+
+					}
+				]
+
+			}
+
+
+		});
+
 
 		//Authenticate with reddit
 		const r = new snoowrap({
 		  userAgent: 'Snoowrap api access',
-		  clientId: '3gKhRlYyOs5mUA',
-		  clientSecret: 'vDCHAopoYy98PyT-NiDin7EvvBM',
-		  refreshToken: '65910552013-9Xk-8b5PPCP6gl-iJXsfqgGD8wY'
+		  clientId: '8ADSwAV-h_fuBA',
+		  clientSecret: '',
+		  refreshToken: '65910552013-tzR5AB2AiLKTqMDI7ZuDFu6cJ3g'
 		});
 
 
@@ -26,20 +101,37 @@
 			var previousValue = 0;
 			let htmlData = document.getElementById("countDown").innerHTML;
 
-			if (htmlData != '') previousValue = parseInt(htmlData.split(",").join(""));
+			if (htmlData != '' && htmlData != ERR_MSG) previousValue = parseInt(htmlData.split(",").join(""));
 
 
 			var animation = new CountUp("countDown", previousValue, parseInt(subscribers));
-			if (!animation.error) animation.start()
+			if (!animation.error) {
+				animation.start()
+				vizChart.data.labels.push('')
+				vizChart.data.datasets[0].data.push(subscribers)
+				vizChart.update()
+			} else {
 			console.log(animation.error)
+			}
+		}
+
+		function resetChart(){
+			vizChart.data.labels = []; vizChart.data.datasets[0].data = [];
+			vizChart.update();
 		}
 
 		//Initial update for when the page loads
-		r.getSubreddit(subreddit).subscribers.then(updateText);
+		r.getSubreddit(subreddit).subscribers.then(updateText)
 
 		//Update constantly  
 		setInterval( () => {
-			r.getSubreddit(subreddit).subscribers.then(updateText);
+			let subreddit = document.getElementById("focusSub").value.trim();
+			if (subreddit != prevsub) {prevsub = subreddit; resetChart();}
+			r.getSubreddit(subreddit).subscribers.then(updateText).catch(err =>{
+				console.log(err);
+				document.getElementById("countDown").innerHTML = ERR_MSG;
+				resetChart();
+		    });
 		}, updateInterval);
 		
 
