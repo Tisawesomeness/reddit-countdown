@@ -1,0 +1,47 @@
+<html>
+	<head>
+		<!-- Load JS libraries -->
+		<script src="scripts/countUp.js"></script>
+		<script src="scripts/snoowrap.js"></script>
+	</head>
+	<body>
+		<center><h1 id="countDown" style="font-size:100px;margin-top:40px;"></h1></center>
+	</body>
+	<script>
+		//Define constants
+		let subreddit = "announcements" 
+		let updateInterval = 1000 //seconds
+
+		//Authenticate with reddit
+		const r = new snoowrap({
+		  userAgent: 'Snoowrap api access',
+		  clientId: '3gKhRlYyOs5mUA',
+		  clientSecret: 'vDCHAopoYy98PyT-NiDin7EvvBM',
+		  refreshToken: '65910552013-9Xk-8b5PPCP6gl-iJXsfqgGD8wY'
+		});
+
+
+		//Function to animate updates
+		function updateText(subscribers){
+			var previousValue = 0;
+			let htmlData = document.getElementById("countDown").innerHTML;
+
+			if (htmlData != '') previousValue = parseInt(htmlData.split(",").join(""));
+
+
+			var animation = new CountUp("countDown", previousValue, parseInt(subscribers));
+			if (!animation.error) animation.start()
+			console.log(animation.error)
+		}
+
+		//Initial update for when the page loads
+		r.getSubreddit(subreddit).subscribers.then(updateText);
+
+		//Update constantly  
+		setInterval( () => {
+			r.getSubreddit(subreddit).subscribers.then(updateText);
+		}, updateInterval);
+		
+
+	</script>
+</html>
