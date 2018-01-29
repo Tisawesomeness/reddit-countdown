@@ -53,7 +53,7 @@
 	</body>
 	<script>
 		//Define constants
-		let subreddit = "announcements" 
+		let subreddit = window.location.split("?sub=") || "announcements" 
 		let updateInterval = 2000 //seconds
 		let ERR_MSG = "Invalid subreddit!"
 		let prevsub = '';
