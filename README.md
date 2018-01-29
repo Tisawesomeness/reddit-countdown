@@ -1,3 +1,5 @@
 # Reddit countdown 
 
-Live subreddit subscriber stats: http://shaneh.xyz/redditlive/
+Live subreddit subscriber stats
+
+Test it out at: http://shaneh.xyz/redditlive/
