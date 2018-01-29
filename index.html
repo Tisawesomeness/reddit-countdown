@@ -14,7 +14,7 @@
 				font-size:100px;
 				margin-top:-20px;
 			    font-family: 'Open Sans Condensed', sans-serif;
-			    text-align:center;
+			    display:inline-block;
 			}
 
 			#focusSub, #focusSub:focus {
@@ -40,6 +40,11 @@
 
 			#progressChart{
 				margin-top:-50px;
+			
+			}
+
+			#holder{
+				text-align:center;
 			}
 
 		</style>
@@ -47,7 +52,9 @@
 
 	<body>
 		<h1 id="header">Live subscriber count for <br/> <div id="indent">/r/ <input id="focusSub" spellcheck="false" maxlength="21"> </div></h1>
+		<div id="holder">
 		<h1 id="countDown"></h1>
+		</div>
 
 		<canvas id="progressChart" width="100" height="100"> </canvas>
 	</body>
@@ -81,6 +88,13 @@
 					}
 				]
 
+			},
+			options: {
+				elements: {
+					point: {
+						radius: 0
+					}
+				}
 			}
 
 
