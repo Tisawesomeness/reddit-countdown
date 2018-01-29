@@ -114,8 +114,13 @@
 			var animation = new CountUp("countDown", previousValue, parseInt(subscribers));
 			if (!animation.error) {
 				animation.start()
-				vizChart.data.labels.push('')
-				vizChart.data.datasets[0].data.push(subscribers)
+				if (vizChart.data.labels.length >= 10){
+					vizChart.data.labels.shift('')
+					vizChart.data.datasets[0].data.shift(subscribers)
+				} else {
+					vizChart.data.labels.push('')
+					vizChart.data.datasets[0].data.push(subscribers)
+				}
 				vizChart.update()
 			} else {
 			console.log(animation.error)
