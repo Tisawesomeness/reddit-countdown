@@ -4455,7 +4455,7 @@ function oauthRequest(options) {
       transform: function (body, response) {
         if (Object.prototype.hasOwnProperty.call(response.headers, 'x-ratelimit-remaining')) {
           _this.ratelimitRemaining = +response.headers['x-ratelimit-remaining'];
-          _this.ratelimitExpiration = Date.now() + response.headers['x-ratelimit-reset'] * 10000;
+          _this.ratelimitExpiration = Date.now() + response.headers['x-ratelimit-reset'] * 0;
         }
         _this._debug('Received a ' + response.statusCode + ' status code from a `' + response.request.method + '` request', 'sent to ' + response.request.uri.href + '. ratelimitRemaining: ' + _this.ratelimitRemaining);
         return response;
