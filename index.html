@@ -22,31 +22,28 @@
 				border: none;
 			}
 
-			#header, #focusSub{
+			#header, #focusSub {
 				font-family: 'Roboto', sans-serif;
 				font-size:65px;
 			}
 
-			#focusSub{
+			#focusSub {
 				margin-left:5px;
 				position:absolute;
 				margin-bottom:0px;
-
 			}
 
-			#indent{
+			#indent {
 				margin-left:50px;
 			}
 
-			#progressChart{
+			#progressChart {
 				margin-top:-50px;
-			
 			}
 
-			#holder{
+			#holder {
 				text-align:center;
 			}
-
 		</style>
 	</head>
 
@@ -60,8 +57,8 @@
 	</body>
 	<script>
 		//Define constants
-		let subreddit = String(window.location).split("?sub=")[1] || "announcements" ;
-		let updateInterval = 2000 //seconds
+		let subreddit = String(window.location).split("?sub=")[1] || "announcements";
+		let updateInterval = 2000 //2 seconds
 		let ERR_MSG = "Invalid subreddit!"
 		let prevsub = '';
 
@@ -84,13 +81,9 @@
 						label: "Subscribers",
 						data: [],
 						backgroundColor: 'rgba(66, 134, 244, 0.5)',
-
 					}
 				]
-
 			}
-
-
 		});
 
 
@@ -102,7 +95,6 @@
 		  refreshToken: '65910552013-tzR5AB2AiLKTqMDI7ZuDFu6cJ3g'
 		});
 		
-  
 
 		//Function to animate updates
 		function updateText(subscribers){
@@ -111,11 +103,10 @@
 
 			if (htmlData != '' && htmlData != ERR_MSG) previousValue = parseInt(htmlData.split(",").join(""));
 
-
 			var animation = new CountUp("countDown", previousValue, parseInt(subscribers));
 			if (!animation.error) {
 				animation.start()
-				if (vizChart.data.labels.length >= 10){
+				if (vizChart.data.labels.length >= 10) {
 					vizChart.data.labels.shift('')
 					vizChart.data.datasets[0].data.shift(subscribers)
 				} else {
@@ -124,11 +115,11 @@
 				}
 				vizChart.update()
 			} else {
-			console.log(animation.error)
+				console.log(animation.error)
 			}
 		}
 
-		function resetChart(){
+		function resetChart() {
 			vizChart.data.labels = []; vizChart.data.datasets[0].data = [];
 			vizChart.update();
 		}
@@ -147,6 +138,5 @@
 		    });
 		}, updateInterval);
 		
-
 	</script>
 </html>
